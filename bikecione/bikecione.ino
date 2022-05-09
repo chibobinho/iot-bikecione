@@ -2,9 +2,6 @@
 #include <MFRC522.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h> 
-#include <StreamString.h>
-#include <limits>
-
 
 #define RST_PIN         9  //PINO Q TA A RST
 #define SS_PIN          10 //PINO Q TA A SS   
