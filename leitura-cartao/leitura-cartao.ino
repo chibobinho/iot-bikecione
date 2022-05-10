@@ -1,58 +1,45 @@
-#include <ESP8266.h>
-#include <SoftwareSerial.h>
+/*
+ * Initial Author: ryand1011 (https://github.com/ryand1011)
+ *
+ * Reads data written by a program such as "rfid_write_personal_data.ino"
+ *
+ * See: https://github.com/miguelbalboa/rfid/tree/master/examples/rfid_write_personal_data
+ *
+ * Uses MIFARE RFID card using RFID-RC522 reader
+ * Uses MFRC522 - Library
+ * -----------------------------------------------------------------------------------------
+ *             MFRC522      Arduino       Arduino   Arduino    Arduino          Arduino
+ *             Reader/PCD   Uno/101       Mega      Nano v3    Leonardo/Micro   Pro Micro
+ * Signal      Pin          Pin           Pin       Pin        Pin              Pin
+ * -----------------------------------------------------------------------------------------
+ * RST/Reset   RST          9             5         D9         RESET/ICSP-5     RST
+ * SPI SS      SDA(SS)      10            53        D10        10               10
+ * SPI MOSI    MOSI         11 / ICSP-4   51        D11        ICSP-4           16
+ * SPI MISO    MISO         12 / ICSP-1   50        D12        ICSP-1           14
+ * SPI SCK     SCK          13 / ICSP-3   52        D13        ICSP-3           15
+ *
+ * More pin layouts for other boards can be found here: https://github.com/miguelbalboa/rfid#pin-layout
+*/
 
 #include <SPI.h>
 #include <MFRC522.h>
 
-#define  RST_PIN     9           // Configurable, see typical pin layout above
-#define  SS_PIN      10          // Configurable, see typical pin layout above
+#define RST_PIN         9           // Configurable, see typical pin layout above
+#define SS_PIN          10          // Configurable, see typical pin layout above
 
-// Cria uma serial nas portas 2 (RX) e 3 (TX)
-SoftwareSerial mySerial(2 , 3);
+MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance
 
-// Cria uma instância MFRC522 
-MFRC522 mfrc522(SS_PIN, RST_PIN);
-
-// Define que o modulo ira utilizar a serial minhaSerial
-ESP8266 wifi(mySerial);
-
-// Configuracao ID e senha da rede Wireless
-#define SSID        "Vermelho"
-#define PASSWORD    "Vermelho@132"
-
-void setup()
-{
-  // Define que o modulo ira utilizar a serial minhaSerial
-  Serial.begin(9600);
-    Serial.print("Inicializando modulo\r\n");
-  Serial.print("Versao do firmware: ");
-  Serial.println(wifi.getVersion().c_str());
-  // Define modo de operacao como STA (station)
-  if (wifi.setOprToStation()) {
-    Serial.print("Modo STA ok\r\n");
-  } else {
-    Serial.print("Erro ao definir modo STA !r\n");
-  }
-
-  // Conexao a rede especificada em SSID
-  if (wifi.joinAP(SSID, PASSWORD)) {
-    Serial.print("Conectado com sucesso a rede wireless\r\n");
-    Serial.print("IP: ");
-    Serial.println(wifi.getLocalIP().c_str());
-  } else {
-    Serial.print("Erro ao conectar rede wireless !!!\r\n");
-  }
-
-  Serial.print(" Fim \r\n");
-
+//*****************************************************************************************//
+void setup() {
+  Serial.begin(9600);                                           // Initialize serial communications with the PC
   SPI.begin();                                                  // Init SPI bus
   mfrc522.PCD_Init();                                              // Init MFRC522 card
   Serial.println(F("Read personal data on a MIFARE PICC:"));    //shows in serial that it is ready to read
 }
 
+//*****************************************************************************************//
+void loop() {
 
-void loop()
-{
   // Prepare key - all keys are set to FFFFFFFFFFFFh at chip delivery from the factory.
   MFRC522::MIFARE_Key key;
   for (byte i = 0; i < 6; i++) key.keyByte[i] = 0xFF;
@@ -74,7 +61,7 @@ void loop()
     return;
   }
 
-  //Serial.println(F("**Card Detected:**"));
+  Serial.println(F("**Card Detected:**"));
 
   //-------------------------------------------
 
@@ -150,3 +137,4 @@ void loop()
   mfrc522.PICC_HaltA();
   mfrc522.PCD_StopCrypto1();
 }
+//*****************************************************************************************//

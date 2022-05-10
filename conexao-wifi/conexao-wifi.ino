@@ -16,11 +16,7 @@ void setup()
 {
   // Define que o modulo ira utilizar a serial minhaSerial
   Serial.begin(9600);
-}
-
-void loop()
-{
-  Serial.print("Inicializando modulo\r\n");
+    Serial.print("Inicializando modulo\r\n");
   Serial.print("Versao do firmware: ");
   Serial.println(wifi.getVersion().c_str());
   // Define modo de operacao como STA (station)
@@ -40,5 +36,10 @@ void loop()
   }
 
   Serial.print(" Fim \r\n");
+  
+}
+
+void loop()
+{
   while (1) {}
 }
