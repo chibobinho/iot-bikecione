@@ -1,7 +1,6 @@
 #include <ESP8266.h>
 #include <SoftwareSerial.h>
 
-
 // Cria uma serial nas portas 2 (RX) e 3 (TX)
 SoftwareSerial mySerial(2 , 3);
 
@@ -9,8 +8,8 @@ SoftwareSerial mySerial(2 , 3);
 ESP8266 wifi(mySerial);
 
 // Configuracao ID e senha da rede Wireless
-#define SSID        "Vermelho"
-#define PASSWORD    "Vermelho@132"
+#define SSID        "SALA_11"
+#define PASSWORD    "info@132"
 
 void setup()
 {
